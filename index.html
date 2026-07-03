@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Historia Clínica Conductual Cognitiva Virtual</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  @import url('https://googleapis.com');
 
   :root {
     --bg: #f4f6f9;
@@ -34,6 +34,288 @@
 
   /* ── TOPBAR ── */
   .topbar {
+    background: var(--blue);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  .topbar h1 { font-size: 1rem; font-weight: 700; }
+  .topbar p  { font-size: .75rem; opacity: .8; margin-top: .1rem; }
+  .topbar .actions { display: flex; gap: .6rem; }
+  .topbar button {
+    padding: .45rem 1rem;
+    border-radius: 6px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: .8rem;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .topbar button:hover { opacity: .85; }
+  .btn-primary   { background: #fff; color: var(--blue); }
+  .btn-secondary { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3) !important; }
+  .btn-danger    { background: #e74c3c; color: #fff; }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 900px;
+    margin: 1.5rem auto;
+    padding: 0 1rem 3rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.3rem;
+    box-shadow: var(--shadow);
+  }
+  .card h2 {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--blue);
+    margin-bottom: 1rem;
+    padding-bottom: .5rem;
+    border-bottom: 2px solid var(--blue-light);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .card h2 .icon { font-size: 1rem; }
+
+  /* ── FORM GRID ── */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  .one { display: grid; gap: .8rem; }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  input, select, textarea {
+    padding: .55rem .8rem;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-family: 'Inter', sans-serif;
+    font-size: .88rem;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color .2s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    background: #fff;
+  }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* ── DISEÑO PARA DICTADO DE VOZ ── */
+  .campo-dictado-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .btn-microfono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background-color: var(--blue);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+  .btn-microfono.grabando {
+    background-color: var(--danger);
+    animation: pulso-grabar 1.5s infinite;
+  }
+  @keyframes pulso-grabar {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  .summary-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  .summary-table th {
+    text-align: left;
+    padding: .6rem .9rem;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-weight: 700;
+    border-bottom: 2px solid var(--border);
+    width: 35%;
+    font-size: .78rem;
+    text-transform: uppercase;
+  }
+  .summary-table td { padding: .6rem .9rem; border-bottom: 1px solid var(--border); color: var(--text); }
+
+  /* ── SESIONES ── */
+  .sesion-item { border: 1px solid var(--border); border-radius: 8px; margin-bottom: .7rem; overflow: hidden; }
+  .sesion-header {
+    background: var(--bg);
+    padding: .6rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--blue);
+  }
+  .sesion-body { padding: .8rem 1rem; display: none; }
+  .sesion-body.open { display: block; }
+  .btn-add {
+    display: block;
+    width: 100%;
+    padding: .65rem;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: .5rem;
+  }
+
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff; }
+    .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  }
+  @media (max-width: 600px) { .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>Historia Clínica Conductual Cognitiva Virtual</h1>
+    <p>Centro de Rehabilitación · Lic. Richard Castillejo Ponce</p>
+  </div>
+  <div class="actions no-print">
+    <button class="btn-primary" onclick="window.print()">🖨️ Imprimir</button>
+    <button class="btn-secondary" onclick="exportarJSON()">💾 Exportar</button>
+    <button class="btn-danger" onclick="limpiarForm()">🗑️ Limpiar</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ACCESO -->
+  <div class="card no-print">
+    <h2><span class="icon">🔐</span> Acceso e Identificación</h2>
+    <div class="two">
+      <label>Código paciente <input id="codigoPaciente" placeholder="P-001" oninput="sync()"></label>
+      <label>Código terapeuta <input id="codigoTerapeuta" placeholder="T-001" oninput="sync()"></label>
+    </div>
+  </div>
+
+  <!-- FILIACIÓN -->
+  <div class="card">
+    <h2><span class="icon">👤</span> Datos de Filiación</h2>
+    <div class="two">
+      <label>Apellidos y nombres completos <input id="nombre" placeholder="Apellido Paterno Materno, Nombres" oninput="sync()"></label>
+      <label>Edad <input id="edad" type="number" placeholder="Años" oninput="sync()"></label>
+      <label>Fecha de nacimiento <input id="fechaNacimiento" type="date" oninput="sync()"></label>
+      <label>Sexo
+        <select id="sexo" onchange="sync()">
+          <option value="">Seleccionar</option>
+          <option>Masculino</option>
+          <option>Femenino</option>
+          <option>Otro</option>
+        </select>
+      </label>
+      <label>Estado civil
+        <select id="estadoCivil" onchange="sync()">
+          <option value="">Seleccionar</option>
+          <option>Soltero/a</option>
+          <option>Casado/a</option>
+          <option>Conviviente</option>
+          <option>Divorciado/a</option>
+          <option>Viudo/a</option>
+        </select>
+      </label>
+      <label>Grado de instrucción
+        <select id="instruccion" onchange="sync()">
+          <option value="">Seleccionar</option>
+          <option>Sin instrucción</option>
+          <option>Primaria</option>
+          <option>Secundaria</option>
+          <option>Técnica</option>
+          <option>Superior universitaria</option>
+          <option>Posgrado</option>
+        </select>
+      </label>
+      <label>Ocupación <input id="ocupacion" placeholder="Ocupación actual" oninput="sync()"></label>
+      <label>Religión <input id="religion" placeholder="Religión o creencia" oninput="sync()"></label>
+      <label>Dirección <input id="direccion" placeholder="Dirección de residencia" oninput="sync()"></label>
+    </div>
+  </div>
+
+  <!-- MOTIVO DE CONSULTA -->
+  <div class="card">
+    <h2><span class="icon">📝</span> Motivo de Consulta</h2>
+    <div class="one">
+      <label>Descripción detallada del motivo de consulta
+        <div class="campo-dictado-container">
+          <textarea id="motivoConsulta" placeholder="Escriba aquí los detalles expuestos por el paciente..." oninput="sync()"></textarea>
+          <button type="button" class="btn-microfono no-print" onclick="activarDictado('motivoConsulta', this)">
+            <span>🎙️</span> <span class="txt-btn-mic">Dictar por voz</span>
+          </button>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- CLASIFICACIÓN DIAGNÓSTICA DSM-5 Y CIE-11 -->
+  <div class="card">
+    <h2><span class="icon">🧬</span> Clasificación Diagnóstica (Adicciones)</h2>
+    <div class="two">
+      <label>Criterio DSM-5 (Trastornos por Consumo de Sustancias)
+        <select id="dsm5" onchange="sync()">
+          <option value="">Seleccionar Categoría DSM-5</option>
+          <option value="F10">Trastorno por consumo de Alcohol</option>
+          <option value="F12">Trastorno por consumo de Cannabis</option>
+          <option value="F17">Trastorno por consumo de Tabaco</option>
+          <option value="F11">Trastorno por consumo de Opioides</option>
+          <option value="F14">Trastorno por consumo de Cocaína / Estimulantes</option>
+          <option value="F15">Trastorno por consumo de Cafeína / Alucinógenos</option>
+          <option value="F63.0">Juego Patológico (Adicción no relacionada a sustancias)</option>
+        </select>
+      </label>
+
+      <label>Criterio CIE-11 (Trastornos debidos al Consumo de Sustancias)
+        <select id="cie11" onchange="sync()">
+          <option value="">Seleccionar Categoría CIE-11</option>
+          <option value="6C40">6C40 Trastornos por consumo de Alcohol</option>
     background: var(--blue);
     color: #fff;
     padding: 1rem 1.5rem;
