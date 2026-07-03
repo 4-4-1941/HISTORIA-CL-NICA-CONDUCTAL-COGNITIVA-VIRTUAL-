@@ -1,6 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script>
+// ── SCRIPT DE DICTADO POR VOZ GLOBAL ──
+document.addEventListener('DOMContentLoaded', () => {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return;
+
+  // Busca automáticamente todos los cuadros de texto de tu Historia Clínica
+  document.querySelectorAll('textarea').forEach((textarea) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'no-print';
+    btn.innerHTML = '🎙️ Dictar';
+    
+    // Estilos para acoplarse a tu diseño azul
+    btn.style.cssText = 'display:inline-flex; align-items:center; gap:4px; background:#1a5276; color:white; border:none; padding:4px 10px; border-radius:6px; font-weight:600; font-size:0.75rem; cursor:pointer; margin-top:5px; transition: background 0.2s;';
+    
+    textarea.parentNode.insertBefore(btn, textarea.nextSibling);
+
+    let recognition = null;
+    let textoFijo = '';
+
+    btn.addEventListener('click', () => {
+      if (recognition) {
+        recognition.stop();
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'es-ES';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      textoFijo = textarea.value;
+
+      recognition.onstart = () => {
+        btn.style.background = '#c0392b';
+        btn.innerHTML = '🛑 Grabando...';
+      };
+
+      recognition.onresult = (e) => {
+        let intermedio = '';
+        for (let i = e.resultIndex; i < e.results.length; ++i) {
+          if (e.results[i].isFinal) textoFijo += e.results[i].transcript + ' ';
+          else intermedio += e.results[i].transcript;
+        }
+        textarea.value = textoFijo + intermedio;
+        if (typeof sync === 'function') sync();
+      };
+
+      recognition.onend = () => {
+        btn.style.background = '#1a5276';
+        btn.innerHTML = '🎙️ Dictar';
+        recognition = null;
+      };
+
+      recognition.start();
+    });
+  });
+});
+        </script>
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Historia Clínica Conductual Cognitiva Virtual</title>
