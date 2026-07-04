@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Historia Clínica Conductual Cognitiva Virtual</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#1a5276">
 <style>
   @import url('https://googleapis.com');
 
@@ -382,36 +386,77 @@
       <label>DSM-5 — Diagnóstico
         <select id="selDSM5" onchange="onDSM()">
           <option value="">Seleccionar diagnóstico</option>
-          <optgroup label="Trastornos relacionados con sustancias">
-            <option data-code="303.90">Trastorno por consumo de alcohol</option>
-            <option data-code="304.20">Trastorno por consumo de cocaína</option>
-            <option data-code="304.00">Trastorno por consumo de opiáceos</option>
-            <option data-code="304.30">Trastorno por consumo de cannabis</option>
-            <option data-code="304.10">Trastorno por consumo de sedantes</option>
-            <option data-code="304.60">Trastorno por consumo de otras sustancias</option>
+          <optgroup label="Trastornos relacionados con sustancias y adictivos">
+            <option data-code="F10.20">Trastorno por consumo de alcohol</option>
+            <option data-code="F11.20">Trastorno por consumo de opiáceos</option>
+            <option data-code="F12.20">Trastorno por consumo de cannabis</option>
+            <option data-code="F13.20">Trastorno por consumo de sedantes, hipnóticos o ansiolíticos</option>
+            <option data-code="F14.20">Trastorno por consumo de cocaína</option>
+            <option data-code="F15.20">Trastorno por consumo de estimulantes (anfetamínicos)</option>
+            <option data-code="F17.200">Trastorno por consumo de tabaco</option>
+            <option data-code="F63.0">Trastorno de juego (ludopatía)</option>
           </optgroup>
           <optgroup label="Trastornos del estado de ánimo">
-            <option data-code="296.20">Trastorno depresivo mayor, episodio único</option>
-            <option data-code="296.30">Trastorno depresivo mayor, recurrente</option>
-            <option data-code="300.4">Trastorno depresivo persistente (distimia)</option>
-            <option data-code="296.40">Trastorno bipolar I</option>
-            <option data-code="296.89">Trastorno bipolar II</option>
+            <option data-code="F32.9">Trastorno depresivo mayor, episodio único</option>
+            <option data-code="F33.9">Trastorno depresivo mayor, recurrente</option>
+            <option data-code="F34.1">Trastorno depresivo persistente (distimia)</option>
+            <option data-code="F31.9">Trastorno bipolar I</option>
+            <option data-code="F31.81">Trastorno bipolar II</option>
           </optgroup>
           <optgroup label="Trastornos de ansiedad">
-            <option data-code="300.02">Trastorno de ansiedad generalizada</option>
-            <option data-code="300.01">Trastorno de pánico</option>
-            <option data-code="300.23">Trastorno de ansiedad social</option>
-            <option data-code="309.81">Trastorno de estrés postraumático</option>
+            <option data-code="F41.1">Trastorno de ansiedad generalizada</option>
+            <option data-code="F41.0">Trastorno de pánico</option>
+            <option data-code="F40.00">Agorafobia</option>
+            <option data-code="F40.10">Trastorno de ansiedad social</option>
+            <option data-code="F40.9">Fobia específica</option>
+          </optgroup>
+          <optgroup label="TOC y trastornos relacionados">
+            <option data-code="F42.2">Trastorno obsesivo-compulsivo</option>
+            <option data-code="F45.22">Trastorno dismórfico corporal</option>
+            <option data-code="F42.3">Trastorno de acumulación</option>
+          </optgroup>
+          <optgroup label="Trauma y estresores">
+            <option data-code="F43.10">Trastorno de estrés postraumático</option>
+            <option data-code="F43.0">Trastorno de estrés agudo</option>
+            <option data-code="F43.21">Trastorno adaptativo, con estado de ánimo depresivo</option>
           </optgroup>
           <optgroup label="Trastornos de personalidad">
-            <option data-code="301.83">Trastorno límite de personalidad</option>
-            <option data-code="301.81">Trastorno narcisista de personalidad</option>
-            <option data-code="301.4">Trastorno obsesivo-compulsivo de personalidad</option>
-            <option data-code="301.7">Trastorno antisocial de personalidad</option>
+            <option data-code="F60.3">Trastorno límite de personalidad</option>
+            <option data-code="F60.81">Trastorno narcisista de personalidad</option>
+            <option data-code="F60.5">Trastorno obsesivo-compulsivo de personalidad</option>
+            <option data-code="F60.2">Trastorno antisocial de personalidad</option>
+            <option data-code="F60.6">Trastorno de personalidad evitativa</option>
+            <option data-code="F60.7">Trastorno de personalidad dependiente</option>
+            <option data-code="F21">Trastorno esquizotípico de personalidad</option>
           </optgroup>
-          <optgroup label="Otros">
-            <option data-code="300.3">Trastorno obsesivo-compulsivo</option>
-            <option data-code="298.9">Trastorno psicótico no especificado</option>
+          <optgroup label="Espectro de la esquizofrenia y psicóticos">
+            <option data-code="F20.9">Esquizofrenia</option>
+            <option data-code="F25.9">Trastorno esquizoafectivo</option>
+            <option data-code="F22">Trastorno delirante</option>
+            <option data-code="F23">Trastorno psicótico breve</option>
+          </optgroup>
+          <optgroup label="Conducta alimentaria">
+            <option data-code="F50.02">Anorexia nerviosa</option>
+            <option data-code="F50.2">Bulimia nerviosa</option>
+            <option data-code="F50.81">Trastorno por atracón</option>
+          </optgroup>
+          <optgroup label="Neurodesarrollo">
+            <option data-code="F90.2">TDAH, presentación combinada</option>
+            <option data-code="F84.0">Trastorno del espectro autista</option>
+          </optgroup>
+          <optgroup label="Sueño-vigilia">
+            <option data-code="F51.01">Insomnio</option>
+            <option data-code="F51.11">Hipersomnia</option>
+          </optgroup>
+          <optgroup label="Neurocognitivos">
+            <option data-code="F03.90">Trastorno neurocognitivo mayor, no especificado</option>
+            <option data-code="F05">Delirium</option>
+          </optgroup>
+          <optgroup label="Disociativos y síntomas somáticos">
+            <option data-code="F44.81">Trastorno de identidad disociativo</option>
+            <option data-code="F48.1">Trastorno de despersonalización/desrealización</option>
+            <option data-code="F45.1">Trastorno de síntomas somáticos</option>
+            <option data-code="F45.21">Trastorno de ansiedad por enfermedad</option>
           </optgroup>
         </select>
       </label>
@@ -421,12 +466,15 @@
       <label>CIE-11 — Diagnóstico
         <select id="selCIE11" onchange="onCIE()">
           <option value="">Seleccionar diagnóstico</option>
-          <optgroup label="Trastornos relacionados con sustancias">
-            <option data-code="6C40">Trastorno por consumo de alcohol</option>
-            <option data-code="6C41">Trastorno por consumo de opiáceos</option>
-            <option data-code="6C43">Trastorno por consumo de cannabis</option>
-            <option data-code="6C44">Trastorno por consumo de sedantes</option>
-            <option data-code="6C45">Trastorno por consumo de cocaína</option>
+          <optgroup label="Trastornos relacionados con sustancias y adictivos">
+            <option data-code="6C40.2">Dependencia del alcohol</option>
+            <option data-code="6C41.2">Dependencia de opiáceos</option>
+            <option data-code="6C43.2">Dependencia del cannabis</option>
+            <option data-code="6C44.2">Dependencia de sedantes, hipnóticos o ansiolíticos</option>
+            <option data-code="6C45.2">Dependencia de la cocaína</option>
+            <option data-code="6C46.2">Dependencia de estimulantes anfetamínicos</option>
+            <option data-code="6C4A.2">Dependencia de la nicotina</option>
+            <option data-code="6C50">Trastorno de juego</option>
           </optgroup>
           <optgroup label="Trastornos del estado de ánimo">
             <option data-code="6A70">Episodio depresivo</option>
@@ -438,16 +486,53 @@
           <optgroup label="Trastornos de ansiedad">
             <option data-code="6B00">Trastorno de ansiedad generalizada</option>
             <option data-code="6B01">Trastorno de pánico</option>
+            <option data-code="6B02">Agorafobia</option>
+            <option data-code="6B03">Fobia específica</option>
             <option data-code="6B04">Trastorno de ansiedad social</option>
-            <option data-code="6B40">Trastorno de estrés postraumático</option>
           </optgroup>
-          <optgroup label="Trastornos de personalidad">
-            <option data-code="6D10">Trastorno de personalidad grave</option>
-            <option data-code="6D11">Trastorno de personalidad moderado</option>
-          </optgroup>
-          <optgroup label="Otros">
+          <optgroup label="TOC y trastornos relacionados">
             <option data-code="6B20">Trastorno obsesivo-compulsivo</option>
+            <option data-code="6B21">Trastorno dismórfico corporal</option>
+            <option data-code="6B24">Trastorno de acumulación</option>
+          </optgroup>
+          <optgroup label="Trauma y estresores">
+            <option data-code="6B40">Trastorno de estrés postraumático</option>
+            <option data-code="6B41">Trastorno de estrés postraumático complejo</option>
+            <option data-code="6B43">Trastorno de adaptación</option>
+          </optgroup>
+          <optgroup label="Trastornos de personalidad (modelo dimensional)">
+            <option data-code="6D10">Trastorno de personalidad, leve</option>
+            <option data-code="6D11">Trastorno de personalidad, moderado</option>
+            <option data-code="6D12">Trastorno de personalidad, grave</option>
+            <option data-code="6D11.5">Trastorno de personalidad con patrón límite</option>
+          </optgroup>
+          <optgroup label="Espectro de la esquizofrenia y psicóticos">
             <option data-code="6A20">Esquizofrenia</option>
+            <option data-code="6A21">Trastorno esquizoafectivo</option>
+            <option data-code="6A24">Trastorno delirante</option>
+            <option data-code="6A23">Trastorno psicótico breve</option>
+          </optgroup>
+          <optgroup label="Conducta alimentaria">
+            <option data-code="6B80">Anorexia nerviosa</option>
+            <option data-code="6B81">Bulimia nerviosa</option>
+            <option data-code="6B82">Trastorno por atracón</option>
+          </optgroup>
+          <optgroup label="Neurodesarrollo">
+            <option data-code="6A05">Trastorno por déficit de atención/hiperactividad</option>
+            <option data-code="6A02">Trastorno del espectro autista</option>
+          </optgroup>
+          <optgroup label="Sueño-vigilia">
+            <option data-code="7A00">Trastorno de insomnio</option>
+            <option data-code="7A01">Trastorno de hipersomnolencia</option>
+          </optgroup>
+          <optgroup label="Neurocognitivos">
+            <option data-code="6D8Z">Demencia, no especificada</option>
+            <option data-code="6D70">Delirium</option>
+          </optgroup>
+          <optgroup label="Disociativos y síntomas somáticos">
+            <option data-code="6B64">Trastorno de identidad disociativo</option>
+            <option data-code="6B66">Trastorno de despersonalización-desrealización</option>
+            <option data-code="6C20">Trastorno de malestar corporal</option>
           </optgroup>
         </select>
       </label>
