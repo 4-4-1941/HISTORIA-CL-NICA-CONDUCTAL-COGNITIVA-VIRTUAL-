@@ -235,7 +235,9 @@
   </div>
   <div class="actions no-print">
     <button class="btn-primary" onclick="window.print()">🖨️ Imprimir</button>
-    <button class="btn-secondary" onclick="exportarJSON()">💾 Exportar</button>
+    <button class="btn-secondary" onclick="exportarJSON()">💾 JSON</button>
+    <button class="btn-secondary" onclick="exportarWord()">📝 Word</button>
+    <button class="btn-secondary" onclick="exportarPDF()">📄 PDF</button>
     <button class="btn-danger" onclick="limpiarForm()">🗑️ Limpiar</button>
   </div>
 </header>
@@ -263,7 +265,7 @@
         <input id="nombre" placeholder="Apellido Paterno Materno, Nombres" oninput="sync()">
       </label>
       <label>Edad
-        <input id="edad" type="number" placeholder="Años" oninput="sync()">
+        <input id="edad" type="number" placeholder="Años cumplidos" oninput="sync(); onEdad(this.value)">
       </label>
       <label>Fecha de nacimiento
         <input id="fechaNacimiento" type="date" oninput="sync()">
@@ -587,6 +589,7 @@
 
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // ── DSM-5 ──
 function onDSM() {
@@ -669,6 +672,18 @@ function toggleSesion(header) {
   arr.textContent = body.classList.contains('open') ? '▼' : '▶';
 }
 
+// ── EDAD → AÑO AUTOMÁTICO EN FECHA DE NACIMIENTO ──
+function onEdad(valor) {
+  const edad = parseInt(valor, 10);
+  if (isNaN(edad) || edad < 0 || edad > 120) return;
+  const anioNacimiento = new Date().getFullYear() - edad;
+  const campo = document.getElementById('fechaNacimiento');
+  const partes = campo.value ? campo.value.split('-') : [null, '01', '01'];
+  const mes = partes[1] || '01';
+  const dia = partes[2] || '01';
+  campo.value = `${anioNacimiento}-${mes}-${dia}`;
+}
+
 // ── LIMPIAR ──
 function limpiarForm() {
   if (!confirm('¿Limpiar todos los campos? Esta acción no se puede deshacer.')) return;
@@ -742,6 +757,161 @@ function exportarJSON() {
   a.href = URL.createObjectURL(blob);
   a.download = `HCC_${g('nombre').replace(/\s+/g,'_') || 'paciente'}_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
+}
+
+// ── RECOPILAR DATOS PARA WORD / PDF ──
+function recopilarSecciones() {
+  const g = id => document.getElementById(id)?.value || '—';
+  const dsm = document.getElementById('selDSM5');
+  const cie = document.getElementById('selCIE11');
+  const dsmTxt = dsm.options[dsm.selectedIndex]?.text || '—';
+  const cieTxt = cie.options[cie.selectedIndex]?.text || '—';
+
+  const sesiones = [...document.querySelectorAll('#sesiones .sesion-item')].map((item, i) => {
+    const fecha = item.querySelector('input[type="date"]')?.value || '—';
+    const textareas = item.querySelectorAll('textarea');
+    return {
+      titulo: `Sesión ${i + 1} — ${fecha}`,
+      campos: [
+        { label: 'Contenido de la sesión', value: textareas[0]?.value || '—' },
+        { label: 'Evolución clínica', value: textareas[1]?.value || '—' }
+      ]
+    };
+  });
+
+  const secciones = [
+    { titulo: 'Acceso e Identificación', campos: [
+      { label: 'Código paciente', value: g('codigoPaciente') },
+      { label: 'Código terapeuta', value: g('codigoTerapeuta') }
+    ]},
+    { titulo: 'Datos de Filiación', campos: [
+      { label: 'Nombre', value: g('nombre') },
+      { label: 'Edad', value: g('edad') },
+      { label: 'Fecha de nacimiento', value: g('fechaNacimiento') },
+      { label: 'Sexo', value: g('sexo') },
+      { label: 'Estado civil', value: g('estadoCivil') },
+      { label: 'Grado de instrucción', value: g('instruccion') },
+      { label: 'Ocupación', value: g('ocupacion') },
+      { label: 'Religión', value: g('religion') },
+      { label: 'Dirección', value: g('direccion') },
+      { label: 'Derivado por', value: g('derivado') }
+    ]},
+    { titulo: 'Motivo de Consulta', campos: [
+      { label: 'Motivo de consulta', value: g('motivoConsulta') },
+      { label: 'Problema actual', value: g('problemaActual') },
+      { label: 'Historia del problema', value: g('historiaProblema') },
+      { label: 'Antecedentes personales', value: g('antecedentesPersonales') },
+      { label: 'Historia familiar', value: g('historiaFamiliar') }
+    ]},
+    { titulo: 'Examen Mental', campos: [
+      { label: 'Apariencia', value: g('apariencia') },
+      { label: 'Pensamiento', value: g('pensamiento') },
+      { label: 'Afecto', value: g('afecto') },
+      { label: 'Cognición', value: g('cognicion') },
+      { label: 'Notas', value: g('examMental') }
+    ]},
+    { titulo: 'Análisis Funcional (A-B-C)', campos: [
+      { label: 'Antecedentes', value: g('antecedentesABC') },
+      { label: 'Conducta', value: g('conductaABC') },
+      { label: 'Consecuencias', value: g('consecuenciasABC') }
+    ]},
+    { titulo: 'Diagnóstico', campos: [
+      { label: 'DSM-5-TR', value: `${dsmTxt} (${g('codigoDSM5')})` },
+      { label: 'CIE-11', value: `${cieTxt} (${g('codigoCIE11')})` },
+      { label: 'Formulación clínica', value: g('formulacion') }
+    ]},
+    { titulo: 'Plan de Intervención', campos: [
+      { label: 'Objetivos', value: g('objetivos') },
+      { label: 'Técnicas', value: g('tecnicas') },
+      { label: 'Frecuencia', value: g('frecuencia') }
+    ]}
+  ];
+
+  if (sesiones.length) secciones.push({ titulo: 'Registro de Sesiones', campos: [], sub: sesiones });
+  return secciones;
+}
+
+// ── EXPORTAR WORD (.doc) ──
+function exportarWord() {
+  const secciones = recopilarSecciones();
+  const nombre = document.getElementById('nombre')?.value || 'paciente';
+  let html = `<html><head><meta charset="utf-8"><title>HCC ${nombre}</title></head><body style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#1e2a3a;">
+    <h1 style="color:#1a5276;font-size:16pt;">Historia Clínica Conductual Cognitiva</h1>
+    <p style="color:#64748b;">Generado: ${new Date().toLocaleString('es-PE')}</p>`;
+
+  secciones.forEach(sec => {
+    html += `<h2 style="color:#1a5276;font-size:13pt;border-bottom:1px solid #1a5276;padding-bottom:4px;">${sec.titulo}</h2>`;
+    sec.campos.forEach(c => {
+      html += `<p><b>${c.label}:</b> ${(c.value || '—').toString().replace(/\n/g, '<br>')}</p>`;
+    });
+    if (sec.sub) sec.sub.forEach(s => {
+      html += `<h3 style="color:#1a5276;font-size:11.5pt;">${s.titulo}</h3>`;
+      s.campos.forEach(c => {
+        html += `<p><b>${c.label}:</b> ${(c.value || '—').toString().replace(/\n/g, '<br>')}</p>`;
+      });
+    });
+  });
+
+  html += '</body></html>';
+  const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `HCC_${nombre.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.doc`;
+  a.click();
+}
+
+// ── EXPORTAR PDF ──
+function exportarPDF() {
+  if (!window.jspdf) {
+    alert('No se pudo cargar el generador de PDF. Verifica tu conexión a internet e intenta de nuevo.');
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const nombre = document.getElementById('nombre')?.value || 'paciente';
+  const margen = 40;
+  const anchoUtil = 515;
+  let y = 50;
+
+  const saltoPagina = (alturaNecesaria) => {
+    if (y + alturaNecesaria > 800) { doc.addPage(); y = 50; }
+  };
+
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor(26, 82, 118);
+  doc.text('Historia Clínica Conductual Cognitiva', margen, y); y += 18;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(100, 116, 139);
+  doc.text(`Generado: ${new Date().toLocaleString('es-PE')}`, margen, y); y += 20;
+
+  recopilarSecciones().forEach(sec => {
+    saltoPagina(30);
+    doc.setDrawColor(26, 82, 118); doc.setLineWidth(1);
+    doc.line(margen, y, margen + anchoUtil, y); y += 14;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(26, 82, 118);
+    doc.text(sec.titulo, margen, y); y += 16;
+
+    const pintarCampos = (campos) => {
+      campos.forEach(c => {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(30, 42, 58);
+        const etiqueta = `${c.label}: `;
+        const lineas = doc.splitTextToSize(`${etiqueta}${c.value || '—'}`, anchoUtil);
+        saltoPagina(lineas.length * 12 + 6);
+        doc.setFont('helvetica', 'normal');
+        doc.text(lineas, margen, y);
+        y += lineas.length * 12 + 5;
+      });
+    };
+
+    pintarCampos(sec.campos);
+    if (sec.sub) sec.sub.forEach(s => {
+      saltoPagina(16);
+      doc.setFont('helvetica', 'bolditalic'); doc.setFontSize(10.5); doc.setTextColor(26, 82, 118);
+      doc.text(s.titulo, margen, y); y += 14;
+      pintarCampos(s.campos);
+    });
+    y += 6;
+  });
+
+  doc.save(`HCC_${nombre.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
 // ── DICTADO POR VOZ (Web Speech API) ──
