@@ -11,13 +11,18 @@ const AudioRecorder = ({ onNotaGenerada }) => {
     const recorder = new MediaRecorder(stream);
     const chunks = [];
 
-    recorder.ondataavailable = (e) => chunks.push(e.data);
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        chunks.push(e.data);
+      }
+    };
+
     recorder.onstop = async () => {
       const blob = new Blob(chunks, { type: 'audio/webm' });
       setCargando(true);
       try {
         const resultado = await procesarAudio(blob);
-        onNotaGenerada(resultado); // Envía el resultado al componente padre
+        onNotaGenerada(resultado);
       } catch (error) {
         alert('Error al procesar el audio: ' + error.message);
       }
@@ -35,6 +40,24 @@ const AudioRecorder = ({ onNotaGenerada }) => {
       mediaRecorder.stream.getTracks().forEach(track => track.stop());
       setGrabando(false);
     }
+  };
+
+  return (
+    <div>
+      <button onClick={iniciarGrabacion} disabled={grabando || cargando}>
+        {grabando ? '🔴 Grabando...' : '🎤 Dictar consulta'}
+      </button>
+      {grabando && (
+        <button onClick={detenerGrabacion} style={{ marginLeft: '10px' }}>
+          ⏹ Detener
+        </button>
+      )}
+      {cargando && <p>⏳ Procesando con IA...</p>}
+    </div>
+  );
+};
+
+export default AudioRecorder;    }
   };
 
   return (
